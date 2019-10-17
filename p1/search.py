@@ -69,3 +69,4 @@ def ucs(start, goal):
 bfs("A", "F")
 dfs("A", "F")
 ucs("A", "F")
+ucs("A", "F")
