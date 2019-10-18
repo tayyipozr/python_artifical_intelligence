@@ -6,7 +6,7 @@ with open("p1/graph.txt") as f:
         arr = line[3:-2].replace(" ", "").split(",")  # ["A:0","B:3"]
         for each in arr:
             if each[2:] != "0" and each[2:] != "":
-                adict2[each[:1]] = each[2:]
+                adict2[each[:1]] = int(each[2:])
         adict[letter] = adict2
 
 
@@ -59,14 +59,53 @@ def dfs(start, goal):
                 goal_state = node
         return dfs(goal_state, goal)
 
-def ucs(start, goal):
-    last_list = []
-    visited = [start]
-    cost = 0
-    for item in adict[start]:
-        if item not in visited:
 
-bfs("A", "F")
-dfs("A", "F")
-ucs("A", "F")
-ucs("A", "F")
+cheapestPath = []
+cheapestCost = 0
+paths = {}
+
+
+def ucs(start, goal):
+    global cheapestCost
+    global cheapestPath
+    curPath = [start]
+    curCost = 0
+    visited = [start]
+    while True:
+        cheapestItem = None
+        cost = 0
+        # find cheapest goto that is not visited
+        for item in adict[curPath[-1]]:
+            if ','.join(curPath + [item]) not in list(paths.keys()) and (
+                    cost == 0 or adict[curPath[-1]][item] < cost) and item not in visited:
+                cost = int(adict[curPath[-1]][item])
+                cheapestItem = item
+                visited.append(item)
+
+        if cost != 0:
+            curCost += cost
+            curPath.append(cheapestItem)
+
+        if curPath == [start] or curPath == []:  # reached end, no path available
+            break;
+
+        if cost == 0 or curPath[-1] == goal:
+            if ','.join(curPath) in list(paths.keys()):
+                break
+            paths[','.join(curPath)] = curCost
+            ucs(start, goal)
+            if curPath[-1] == goal and (curCost < cheapestCost or cheapestCost == 0):
+                cheapestPath = curPath
+                cheapestCost = curCost
+            break
+
+start_state = input("Please enter the start state : ")
+goal_state = input("Please enter the goal state : ")
+
+bfs(start_state, goal_state)
+dfs(start_state, goal_state)
+ucs(start_state, goal_state)
+print("UCS : ", end="")
+for i in range(len(cheapestPath) - 1):
+    print(cheapestPath[i] + " - ", end="")
+print(cheapestPath[-1])
