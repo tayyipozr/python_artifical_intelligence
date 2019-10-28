@@ -23,13 +23,12 @@ problem.addConstraint(AllDifferentConstraint(), ("a1", "b1", "c1", "d1"))
 problem.addConstraint(AllDifferentConstraint(), ("a2", "b2", "c2", "d2"))
 problem.addConstraint(AllDifferentConstraint(), ("a3", "b3", "c3", "d3"))
 problem.addConstraint(AllDifferentConstraint(), ("a4", "b4", "c4", "d4"))
-for k in constraints_str:
-    problem.addConstraint(lambda a, b: a > b, (k, constraints_str[k]))
 
-for k in constraints_num:
-    var = k
-    value = constraints_num[k]
-    problem.addConstraint(lambda a: str(a) == value, [k, ])
+for k, v in constraints_str.items():
+    problem.addConstraint(lambda a, b: a > b, (k, v))
+
+for k, v in constraints_num.items():
+    problem.addConstraint(lambda a: a == int(v), [k,])
 
 solution = problem.getSolution()
 print(solution)
