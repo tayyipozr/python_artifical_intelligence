@@ -39,8 +39,8 @@ def findMid(alist):
 
 
 def randomP():
-    p1 = Person(random.randrange(200), random.randrange(100))
-    p2 = Person(random.randrange(200, 400), random.randrange(100, 200))
+    p1 = Person(random.randrange(50, 200), random.randrange(30, 100))
+    p2 = Person(random.randrange(210, 350), random.randrange(30, 100))
     return p1, p2
 
 
@@ -73,19 +73,17 @@ plt.scatter([person.income for person in people], [person.spend for person in pe
 plt.scatter(rnd[0].income, rnd[0].spend, color='red')
 plt.scatter(rnd[1].income, rnd[1].spend, color='black')
 plt.show()
-sleep(2)
 plt.close('Figure 1')
 plt.scatter([person.income for person in nearest[0]], [person.spend for person in nearest[0]], color='red')
 plt.scatter([person.income for person in nearest[1]], [person.spend for person in nearest[1]], color='black')
 plt.show()
-sleep(2)
 plt.close()
 
 previousRnd = [0, 0]
 previousRnd2 = [0, 0]
 
-while previousRnd[0] != rnd[0].income and previousRnd[1] != rnd[0].spend or previousRnd2[0] != rnd[1].income and \
-        previousRnd2[1] != rnd[1].spend:
+while (previousRnd[0] != rnd[0].income and previousRnd[1] != rnd[0].spend) and (previousRnd2[0] != rnd[1].income and
+                                                                                previousRnd2[1] != rnd[1].spend):
     previousRnd[0] = rnd[0].income
     previousRnd[1] = rnd[0].spend
     previousRnd2[0] = rnd[1].income
@@ -98,17 +96,19 @@ while previousRnd[0] != rnd[0].income and previousRnd[1] != rnd[0].spend or prev
     rnd[1].income = incomeSpend2[0]
     rnd[1].spend = incomeSpend2[1]
     nearest = findNearests(people, rnd)
-
+    print(f"Previous red dot x: {previousRnd[0]} y: {previousRnd[1]}")
+    print(f"Previous black dot x: {previousRnd2[0]} y: {previousRnd2[1]}")
+    print(f"Red dot x: {rnd[0].income} y: {rnd[0].spend}")
+    print(f"Black dot x: {rnd[1].income} y: {rnd[1].spend}")
+    print("-" * 50)
     plt.xlabel("Income 2")
-    plt.ylabel("Spend 2")
++    plt.ylabel("Spend 2")
     plt.scatter([person.income for person in people], [person.spend for person in people])
     plt.scatter(rnd[0].income, rnd[0].spend, color='red')
     plt.scatter(rnd[1].income, rnd[1].spend, color='black')
     plt.show()
-    sleep(2)
     plt.close()
     plt.scatter([person.income for person in nearest[0]], [person.spend for person in nearest[0]], color='red')
     plt.scatter([person.income for person in nearest[1]], [person.spend for person in nearest[1]], color='black')
     plt.show()
-    sleep(2)
     plt.close()
