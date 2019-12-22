@@ -3,7 +3,6 @@ import math
 import operator
 import matplotlib.pyplot as plt
 
-
 # initialize knn class
 class Knn:
     def __init__(self, phones):
