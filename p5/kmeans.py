@@ -102,7 +102,7 @@ while (previousRnd[0] != rnd[0].income and previousRnd[1] != rnd[0].spend) and (
     print(f"Black dot x: {rnd[1].income} y: {rnd[1].spend}")
     print("-" * 50)
     plt.xlabel("Income 2")
-+    plt.ylabel("Spend 2")
+    plt.ylabel("Spend 2")
     plt.scatter([person.income for person in people], [person.spend for person in people])
     plt.scatter(rnd[0].income, rnd[0].spend, color='red')
     plt.scatter(rnd[1].income, rnd[1].spend, color='black')
