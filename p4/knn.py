@@ -85,5 +85,7 @@ knn_acc = []
 for i in range(1, 11):
     knn_acc.append(knn.accuracy(i))
 
+f = plt.figure()
 plt.plot([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], knn_acc)
 plt.show()
+f.savefig('plot.pdf')
