@@ -3,11 +3,15 @@ import math
 import operator
 import matplotlib.pyplot as plt
 
+
 # initialize knn class
 class Knn:
-    def __init__(self, phones):
-        self.phones = phones
-        self.length = len(phones)
+    def __init__(self, test_phones, train_phones):
+        self.train_phones = train_phones
+        self.test_phones = test_phones
+        print("The nearest ten neighbours searching started...")
+        self.neighbours = self.findNeighbours()
+        print("Founded")
 
     # calculation of euclideanDistance between two phone properties
     @staticmethod
@@ -18,26 +22,37 @@ class Knn:
         d = math.sqrt(d)
         return d
 
-    def findNeighbours(self, test_phone, knn_k):
-        distances = {}
-        neighbours = []
-        for k, v in self.phones.items():
-            euclideanDistance = self.euclideanDistance(v.properties, test_phone.properties)
-            print(euclideanDistance)
-            distances[k] = euclideanDistance
-        sorted_distances = sorted(distances.items(), key=operator.itemgetter(1))
-        for i, phone in enumerate(sorted_distances):
-            if i < knn_k + 1:
-                neighbours.append(phone)
-            else:
-                break
-        return neighbours
+    def findNeighbours(self):
+        top_ten_neighbours = {}
+        neighbours = {}
+        for k, v in self.train_phones.items():
+            for key, value in self.test_phones.items():
+                euclideanDistance = self.euclideanDistance(v.properties, value.properties)
+                neighbours[value] = euclideanDistance
+            sorted_neighbours = sorted(neighbours.items(), key=operator.itemgetter(1))
+            top_ten_neighbours[v] = sorted_neighbours[:10]
+        return top_ten_neighbours
+
+    def accuracy(self, knn_k):
+        accuracy = 0
+        for key, value in self.neighbours.items():
+            acc = 0
+            counter = 0
+            for v in value:
+                if counter == knn_k:
+                    break
+                if key.label == v[0].label:
+                    acc += 1
+                counter += 1
+            accuracy += (acc / counter)
+        return accuracy
 
 
 # initialize phone class
 class Phone:
     def __init__(self, properties):
-        self.properties = properties
+        self.label = properties[-1]
+        self.properties = properties[:20]
 
 
 # initialize train dictionary
@@ -64,39 +79,11 @@ with open("test.csv", "r", encoding="utf8") as csvFile:
                 phone.properties[k] = float(j)
                 test_dict[i] = phone
 
-knn = Knn(train_dict)
-test_phone_input = int(input("Select a number to pick a test phone (between 1-1000) : "))
-acc = []
-num = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-for a in num:
-    print(a)
-    neighbours = knn.findNeighbours(test_dict[test_phone_input], a)
-    guesses = []
-    for i in neighbours:
-        for k, v in train_dict.items():
-            if i[0] == k:
-                print(v.properties[-1])
-                guesses.append(v.properties[-1])
-    print("-----------")
-    print(test_dict[test_phone_input].properties[-1])
+print("It started\nPlease wait....")
+knn = Knn(test_dict, train_dict)
+knn_acc = []
+for i in range(1, 11):
+    knn_acc.append(knn.accuracy(i))
 
-    print(guesses)
-
-    accuracy = 0
-    for i in guesses:
-        if test_dict[test_phone_input].properties[-1] == i:
-            accuracy += 1
-    print("Accuracy: " + str(accuracy / len(neighbours) * 100))
-    acc.append(accuracy / len(neighbours) * 100)
-
-print(num)
-print(acc)
-f = plt.figure()
-plt.xticks(num)
-y = list(range(0, 101, 5))
-plt.yticks(y)
-plt.plot(num, acc)
-plt.xlabel("K")
-plt.ylabel("Accuracy")
+plt.plot([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], knn_acc)
 plt.show()
-f.savefig("plot.pdf")
